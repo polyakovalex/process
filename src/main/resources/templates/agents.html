@@ -1,0 +1,98 @@
+<head th:replace="~{fragments/head.html :: head(title='Агенты', description='Агенты')}">
+</head>
+
+<body>
+  <div th:replace="fragments/header :: header"></div>
+
+  <div class="container-fluid" style="max-width: 900px; margin: 0 auto;">
+    <h2 class="text-center">Заказчики</h2>
+
+    <div class="">
+      <a th:href="@{/agents/new}" class="btn btn-info" role="button">Добавить Агента</a>
+    </div>
+
+    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"
+      role="alert">
+      [[${message}]]
+      <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div th:if="${agents.size() > 0}">
+      <table class="table table-hover table-responsive-xl">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">ИД</th>
+            <th scope="col">Агент</th>
+            <th scope="col">Действие</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="agent : ${agents}">
+            <th scope="row">[[${agent.id}]]</th>
+            <td>[[${agent.title}]]</td>
+            <td>
+              <a th:href="@{'/agents/' + ${agent.id}}" title="Редактирование места"
+                class="fa-regular fa-pen-to-square icon-dark"></a>
+              &nbsp;
+              <a th:href="@{'/agents/delete/' + ${agent.id}}" th:agentTitle="${agent.title}" id="btnDelete"
+                title="Удаление места" class="fa-regular fa-trash-can icon-dark btn-delete"></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="" th:unless="${agents.size() > 0}">
+      <span>Агенты не найдены!</span>
+    </div>
+  </div>
+
+  <div class="modal fade text-center" id="confirmModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Подтверждение удаления</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <span id="confirmText"></span>
+        </div>
+
+        <div class="modal-footer">
+          <a type="button" id="yesBtn" class="btn btn-danger">Да</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="fragments/footer :: footer"></div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".btn-delete").on("click", function (e) {
+        e.preventDefault();
+        link = $(this);
+
+        agentTitle = link.attr("agentTitle");
+        $("#yesBtn").attr("href", link.attr("href"));
+        $("#confirmText").html("Вы действительно хотите удалить агента \<strong\>" + AgentTitle + "\<\/strong\>?");
+        $("#confirmModal").modal();
+      });
+
+      $("#btnClear").on("click", function (e) {
+        e.preventDefault();
+        $("#keyword").text("");
+        window.location = "[[@{/agents}]]";
+      });
+    });
+  </script>
+
+</body>
+
+</html>

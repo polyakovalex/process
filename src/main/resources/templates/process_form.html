@@ -1,0 +1,70 @@
+<head th:replace="~{fragments/head.html :: head(title='Добавление заказа', description='Добавление заказа')}">
+</head>
+
+<body>
+  <div th:replace="fragments/header :: header"></div>
+
+  <div class="container-fluid">
+    <h2 class="text-center">[[${pageTitle}]]</h2>
+
+    <div class="my-3">
+      <form th:action="@{/processes/save}" method="post" enctype="multipart/form-data" th:object="${process}"
+        style="max-width: 550px; margin: 0 auto">
+
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="p-3">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="title">Наименование</label>
+            <div class="col-sm-9">
+              <input type="text" th:field="*{title}" required minlength="2" maxlength="128" class="form-control" id="title" />
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="dateAdd">Дата</label>
+            <div class="col-sm-9">
+              <input type="date" th:field="*{dateAdd}" class="form-control" id="dateAdd" />
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="agent-input" class="col-sm-3 col-form-label">Заказчик</label>
+            <select name="agentId" class="form-select" id="agent-input" required>
+              <option th:each="agent : ${agents}" th:value="${agent.id}" th:text="${agent.title}">
+                United States
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group row">
+            <label for="place-input" class="col-sm-3 col-form-label">Место</label>
+            <select name="placeId" class="form-select" id="place-input" required>
+              <option th:each="place : ${places}" th:value="${place.id}" th:text="${place.title}">
+                United States
+              </option>
+            </select>
+          </div>
+
+          <div class="text-center">
+            <input type="submit" value="Save" class="btn btn-primary btn-sm mr-2" />
+            <input type="button" value="Cancel" id="btnCancel" class="btn btn-secondary btn-sm" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div th:replace="fragments/footer :: footer"></div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $("#btnCancel").on("click", function () {
+        window.location = "[[@{/processes}]]";
+      });
+    });
+  </script>
+
+</body>
+
+</html>

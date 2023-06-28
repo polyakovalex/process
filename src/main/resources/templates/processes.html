@@ -1,0 +1,118 @@
+<head th:replace="~{fragments/head.html :: head(title='Список заказов', description='Список заказов')}">
+</head>
+
+<body>
+  <div th:replace="fragments/header :: header"></div>
+
+  <div class="container-fluid" style="max-width: 900px; margin: 0 auto;">
+    <h2 class="text-center">Список заказок</h2>
+
+    <div th:if="${message != null}" class="alert alert-success alert-dismissible fade show text-center message"
+      role="alert">
+      [[${message}]]
+      <button type="button" class="close btn-sm" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="my-3">
+      <form th:action="@{/processes}">
+        <div class="row d-flex">
+          <div class="col-md-6 mt-2">
+            <div class="search">
+              <i class="fa fa-search"></i>
+              <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"
+                placeholder="Enter keyword">
+              <button type="submit" class="btn btn-secondary">Поиск заказов</button>
+            </div>
+          </div>
+          <div class="col-md-6 mt-2">
+            <button id="btnClear" class="btn btn-info">Очистить</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div th:if="${processes.size() > 0}">
+      <table class="table table-hover table-responsive-xl">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">ИД</th>
+            <th scope="col">Дата обработки</th>
+            <th scope="col">Заказчик</th>
+            <th scope="col">Место обработки</th>
+            <th scope="col">Камера</th>
+            <th scope="col">Действие</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="process : ${processes}">
+            <th scope="row">[[${process.id}]]</th>
+            <td>[[${process.dateAdd}]]</td>
+            <td>[[${process.agent.title}]]</td>
+            <td>[[${process.place.title}]]</td>
+            <td></td>
+            <td>
+              <a th:href="@{'/processes/' + ${process.id}}" title="Edit this process"
+                class="fa-regular fa-pen-to-square icon-dark"></a>
+              &nbsp;
+              <a th:href="@{'/processes/delete/' + ${process.id}}" th:processTitle="${process.title}" id="btnDelete"
+                title="Delete this process" class="fa-regular fa-trash-can icon-dark btn-delete"></a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="" th:unless="${processes.size() > 0}">
+      <span>Заказы не найдены!</span>
+    </div>
+  </div>
+
+  <div class="modal fade text-center" id="confirmModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Подтверждение удаления</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <span id="confirmText"></span>
+        </div>
+
+        <div class="modal-footer">
+          <a type="button" id="yesBtn" class="btn btn-danger">Да</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Нет</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="fragments/footer :: footer"></div>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".btn-delete").on("click", function (e) {
+        e.preventDefault();
+        link = $(this);
+
+        processTitle = link.attr("processTitle");
+        $("#yesBtn").attr("href", link.attr("href"));
+        $("#confirmText").html("Вы действительно хотите удалить заказ \<strong\>" + ProcessTitle + "\<\/strong\>?");
+        $("#confirmModal").modal();
+      });
+
+      $("#btnClear").on("click", function (e) {
+        e.preventDefault();
+        $("#keyword").text("");
+        window.location = "[[@{/processes}]]";
+      });
+    });
+  </script>
+
+</body>
+
+</html>
